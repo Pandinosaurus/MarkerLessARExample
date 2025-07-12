@@ -1,6 +1,6 @@
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.UnityUtils;
+using OpenCVForUnity.UnityIntegration;
 using OpenCVForUnity.VideoioModule;
 using System;
 using System.Collections;
@@ -56,7 +56,7 @@ namespace MarkerLessARExample
 
 #if UNITY_WEBGL
 
-            getFilePath_Coroutine = Utils.getFilePathAsync(fileName, (result) =>
+            getFilePath_Coroutine = OpenCVEnv.GetFilePathCoroutine(fileName, (result) =>
             {
                 getFilePath_Coroutine = null;
 
@@ -67,7 +67,7 @@ namespace MarkerLessARExample
             });
             StartCoroutine(getFilePath_Coroutine);
 #else
-            capture.open(Utils.getFilePath(fileName));
+            capture.open(OpenCVEnv.GetFilePath(fileName));
             Init();
 #endif
         }
@@ -127,7 +127,7 @@ namespace MarkerLessARExample
 
                     Imgproc.cvtColor(rgbMat, rgbMat, Imgproc.COLOR_BGR2RGB);
 
-                    Utils.matToTexture2D(rgbMat, texture, colors);
+                    OpenCVMatUtils.MatToTexture2D(rgbMat, texture, colors);
                 }
             }
         }

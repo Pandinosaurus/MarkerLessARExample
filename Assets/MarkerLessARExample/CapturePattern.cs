@@ -2,8 +2,8 @@ using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.Features2dModule;
 using OpenCVForUnity.ImgcodecsModule;
 using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.UnityUtils;
-using OpenCVForUnity.UnityUtils.Helper;
+using OpenCVForUnity.UnityIntegration;
+using OpenCVForUnity.UnityIntegration.Helper.Source2Mat;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -79,7 +79,7 @@ namespace MarkerLessARExample
 
                     Texture2D patternTexture = new Texture2D(patternMat.width(), patternMat.height(), TextureFormat.RGBA32, false);
 
-                    Utils.matToTexture2D(patternMat, patternTexture);
+                    OpenCVMatUtils.MatToTexture2D(patternMat, patternTexture);
 
                     patternRawImage.texture = patternTexture;
                     patternRawImage.rectTransform.localScale = new Vector3(1.0f, (float)patternMat.height() / (float)patternMat.width(), 1.0f);
@@ -89,7 +89,7 @@ namespace MarkerLessARExample
             }
 
             multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
-            multiSource2MatHelper.outputColorFormat = Source2MatHelperColorFormat.RGBA;
+            multiSource2MatHelper.OutputColorFormat = Source2MatHelperColorFormat.RGBA;
             multiSource2MatHelper.Initialize();
 
             detector = ORB.create();
@@ -134,8 +134,8 @@ namespace MarkerLessARExample
 
 
             // If the WebCam is front facing, flip the Mat horizontally. Required for successful detection.
-            if (multiSource2MatHelper.source2MatHelper is WebCamTexture2MatHelper webCamHelper)
-                webCamHelper.flipHorizontal = webCamHelper.IsFrontFacing();
+            if (multiSource2MatHelper.Source2MatHelper is WebCamTexture2MatHelper webCamHelper)
+                webCamHelper.FlipHorizontal = webCamHelper.IsFrontFacing();
 
 
             int patternWidth = (int)(Mathf.Min(rgbaMat.width(), rgbaMat.height()) * 0.8f);
@@ -171,7 +171,7 @@ namespace MarkerLessARExample
 
             if (fpsMonitor != null)
             {
-                fpsMonitor.consoleText = "ErrorCode: " + errorCode + ":" + message;
+                fpsMonitor.ConsoleText = "ErrorCode: " + errorCode + ":" + message;
             }
         }
 
@@ -192,7 +192,7 @@ namespace MarkerLessARExample
 
                 Imgproc.rectangle(rgbMat, patternRect.tl(), patternRect.br(), new Scalar(255, 0, 0, 255), 5);
 
-                Utils.matToTexture2D(rgbMat, texture);
+                OpenCVMatUtils.MatToTexture2D(rgbMat, texture);
             }
         }
 
@@ -247,7 +247,7 @@ namespace MarkerLessARExample
         /// </summary>
         public void OnChangeCameraButtonClick()
         {
-            multiSource2MatHelper.requestedIsFrontFacing = !multiSource2MatHelper.requestedIsFrontFacing;
+            multiSource2MatHelper.RequestedIsFrontFacing = !multiSource2MatHelper.RequestedIsFrontFacing;
         }
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace MarkerLessARExample
 
             Texture2D patternTexture = new Texture2D(patternMat.width(), patternMat.height(), TextureFormat.RGBA32, false);
 
-            Utils.matToTexture2D(patternMat, patternTexture);
+            OpenCVMatUtils.MatToTexture2D(patternMat, patternTexture);
 
             patternRawImage.texture = patternTexture;
 
@@ -282,7 +282,7 @@ namespace MarkerLessARExample
             {
                 Texture2D patternTexture = (Texture2D)patternRawImage.texture;
                 Mat patternMat = new Mat(patternRect.size(), CvType.CV_8UC3);
-                Utils.texture2DToMat(patternTexture, patternMat);
+                OpenCVMatUtils.Texture2DToMat(patternTexture, patternMat);
                 Imgproc.cvtColor(patternMat, patternMat, Imgproc.COLOR_RGB2BGR);
 
                 string savePath = Application.persistentDataPath;

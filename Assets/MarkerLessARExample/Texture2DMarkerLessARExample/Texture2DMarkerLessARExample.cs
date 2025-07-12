@@ -1,6 +1,6 @@
 using OpenCVForUnity.Calib3dModule;
 using OpenCVForUnity.CoreModule;
-using OpenCVForUnity.UnityUtils;
+using OpenCVForUnity.UnityIntegration;
 using OpenCVMarkerLessAR;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -49,7 +49,7 @@ namespace MarkerLessARExample
         {
             Mat patternMat = new Mat(patternTexture.height, patternTexture.width, CvType.CV_8UC4);
 
-            Utils.texture2DToMat(patternTexture, patternMat);
+            OpenCVMatUtils.Texture2DToMat(patternTexture, patternMat);
             Debug.Log("patternMat dst ToString " + patternMat.ToString());
 
             patternRawImage.texture = patternTexture;
@@ -58,7 +58,7 @@ namespace MarkerLessARExample
 
             Mat imgMat = new Mat(imgTexture.height, imgTexture.width, CvType.CV_8UC4);
 
-            Utils.texture2DToMat(imgTexture, imgMat);
+            OpenCVMatUtils.Texture2DToMat(imgTexture, imgMat);
             Debug.Log("imgMat dst ToString " + imgMat.ToString());
 
             gameObject.transform.localScale = new Vector3(imgTexture.width, imgTexture.height, 1);
@@ -193,7 +193,7 @@ namespace MarkerLessARExample
 
                     Debug.Log("ARM " + ARM.ToString());
 
-                    ARUtils.SetTransformFromMatrix(ARCamera.transform, ref ARM);
+                    OpenCVARUtils.SetTransformFromMatrix(ARCamera.transform, ref ARM);
                 }
                 else
                 {
@@ -201,13 +201,13 @@ namespace MarkerLessARExample
 
                     Debug.Log("ARM " + ARM.ToString());
 
-                    ARUtils.SetTransformFromMatrix(ARGameObject.transform, ref ARM);
+                    OpenCVARUtils.SetTransformFromMatrix(ARGameObject.transform, ref ARM);
                 }
             }
 
             Texture2D texture = new Texture2D(imgMat.cols(), imgMat.rows(), TextureFormat.RGBA32, false);
 
-            Utils.matToTexture2D(imgMat, texture);
+            OpenCVMatUtils.MatToTexture2D(imgMat, texture);
 
             gameObject.GetComponent<Renderer>().material.mainTexture = texture;
         }

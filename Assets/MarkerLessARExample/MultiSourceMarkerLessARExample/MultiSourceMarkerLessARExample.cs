@@ -2,8 +2,8 @@ using OpenCVForUnity.Calib3dModule;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgcodecsModule;
 using OpenCVForUnity.ImgprocModule;
-using OpenCVForUnity.UnityUtils;
-using OpenCVForUnity.UnityUtils.Helper;
+using OpenCVForUnity.UnityIntegration;
+using OpenCVForUnity.UnityIntegration.Helper.Source2Mat;
 using OpenCVMarkerLessAR;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -166,12 +166,12 @@ namespace MarkerLessARExample
             ARGameObject.gameObject.SetActive(false);
 
             multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
-            multiSource2MatHelper.outputColorFormat = Source2MatHelperColorFormat.RGBA;
+            multiSource2MatHelper.OutputColorFormat = Source2MatHelperColorFormat.RGBA;
 
             if (patternTexture != null)
             {
                 patternMat = new Mat(patternTexture.height, patternTexture.width, CvType.CV_8UC3);
-                Utils.texture2DToMat(patternTexture, patternMat);
+                OpenCVMatUtils.Texture2DToMat(patternTexture, patternMat);
                 Imgproc.cvtColor(patternMat, patternMat, Imgproc.COLOR_RGB2BGR);
                 Debug.Log("patternMat dst ToString " + patternMat.ToString());
 
@@ -193,7 +193,7 @@ namespace MarkerLessARExample
                 Texture2D patternTexture = new Texture2D(patternMat.width(), patternMat.height(), TextureFormat.RGBA32, false);
 
                 //To reuse mat, set the flipAfter flag to true.
-                Utils.matToTexture2D(patternMat, patternTexture, true, 0, true);
+                OpenCVMatUtils.MatToTexture2D(patternMat, patternTexture, true, 0, true);
                 Debug.Log("patternMat dst ToString " + patternMat.ToString());
 
                 patternRawImage.texture = patternTexture;
@@ -327,8 +327,8 @@ namespace MarkerLessARExample
 
 
             // If the WebCam is front facing, flip the Mat horizontally. Required for successful detection.
-            if (multiSource2MatHelper.source2MatHelper is WebCamTexture2MatHelper webCamHelper)
-                webCamHelper.flipHorizontal = webCamHelper.IsFrontFacing();
+            if (multiSource2MatHelper.Source2MatHelper is WebCamTexture2MatHelper webCamHelper)
+                webCamHelper.FlipHorizontal = webCamHelper.IsFrontFacing();
         }
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace MarkerLessARExample
 
             if (fpsMonitor != null)
             {
-                fpsMonitor.consoleText = "ErrorCode: " + errorCode + ":" + message;
+                fpsMonitor.ConsoleText = "ErrorCode: " + errorCode + ":" + message;
             }
         }
 
@@ -392,7 +392,7 @@ namespace MarkerLessARExample
 
                         //Debug.Log("ARM " + ARM.ToString());
 
-                        ARUtils.SetTransformFromMatrix(ARCamera.transform, ref ARM);
+                        OpenCVARUtils.SetTransformFromMatrix(ARCamera.transform, ref ARM);
                     }
                     else
                     {
@@ -400,7 +400,7 @@ namespace MarkerLessARExample
 
                         //Debug.Log("ARM " + ARM.ToString());
 
-                        ARUtils.SetTransformFromMatrix(ARGameObject.transform, ref ARM);
+                        OpenCVARUtils.SetTransformFromMatrix(ARGameObject.transform, ref ARM);
                     }
 
                     ARGameObject.GetComponent<DelayableSetActive>().SetActive(true);
@@ -410,7 +410,7 @@ namespace MarkerLessARExample
                     ARGameObject.GetComponent<DelayableSetActive>().SetActive(false, 0.5f);
                 }
 
-                Utils.matToTexture2D(rgbaMat, texture);
+                OpenCVMatUtils.MatToTexture2D(rgbaMat, texture);
             }
         }
 
@@ -462,7 +462,7 @@ namespace MarkerLessARExample
         /// </summary>
         public void OnChangeCameraButtonClick()
         {
-            multiSource2MatHelper.requestedIsFrontFacing = !multiSource2MatHelper.requestedIsFrontFacing;
+            multiSource2MatHelper.RequestedIsFrontFacing = !multiSource2MatHelper.RequestedIsFrontFacing;
         }
 
         /// <summary>
